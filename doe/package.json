@@ -20,7 +20,6 @@
     "format": "prettier --write --experimental-cli src/"
   },
   "dependencies": {
-    "axios": "^1.13.2",
     "ol": "^10.7.0",
     "ol-contextmenu": "^5.5.0",
     "ol-ext": "^4.0.37",

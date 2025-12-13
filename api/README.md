@@ -1,6 +1,6 @@
 # DOE Task API
 
-A Node.js API built with Koa.js for managing DOE (Department of Energy) related tasks, specifically handling location entries using SQLite database.
+A Node.js API built with Koa.js for managing DOE related tasks, specifically handling location entries using SQLite database.
 
 ## Features
 
@@ -61,7 +61,6 @@ The server will run on `http://localhost:3000` by default, or set the `PORT` env
 - **koa-compress** - Compression middleware
 - **better-sqlite3** - SQLite database driver
 - **joi** - Input validation
-- **mongoose** - MongoDB ODM (for future use)
 
 ## Database
 
