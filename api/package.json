@@ -1,0 +1,23 @@
+{
+  "name": "api",
+  "version": "1.0.0",
+  "description": "DOE Task API",
+  "license": "ISC",
+  "author": "Phillip Pan",
+  "type": "module",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "dev": "node --watch app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "@koa/cors": "^5.0.0",
+    "@koa/router": "^15.1.0",
+    "better-sqlite3": "^12.5.0",
+    "joi": "^18.0.2",
+    "koa": "^3.1.1",
+    "koa-bodyparser": "^4.4.1",
+    "koa-compress": "^5.1.1"
+  }
+}
