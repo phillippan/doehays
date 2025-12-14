@@ -1,6 +1,10 @@
 <template>
-  <input v-model="location" placeholder="Search location..." @click="clearLocation"/>
-  <button @click="getOpenStreetGeocode">Show Address</button>
+  <input v-model="location" placeholder="Search location..." @click="clearLocation"/>&nbsp;
+  <button @click="getOpenStreetGeocode">Show Address</button>&nbsp;
+  <button @click="getClicksOnMap"">Show all clicks on the map</button>
+  <li v-if="savedLocations" v-for="item in savedLocations" :key="item.id">
+    {{ item.id }}: {{ item.lat }}, {{ item.lon }}
+  </li>
   <ol-map
     :loadTilesWhileAnimating="true"
     :loadTilesWhileInteracting="true"
@@ -17,6 +21,22 @@
     <ol-tile-layer>
       <ol-source-osm />
     </ol-tile-layer>
+    <ol-vector-layer :zIndex="2">
+      <ol-source-vector>
+        <ol-feature
+          v-for="item in savedLocations"
+          :key="item.id"
+        >
+          <ol-geom-point :coordinates="[item.lon, item.lat]"></ol-geom-point>
+          <ol-style>
+            <ol-style-circle :radius="6">
+              <ol-style-fill color="red" />
+              <ol-style-stroke :width="2" color="red" />
+            </ol-style-circle>
+          </ol-style>
+        </ol-feature>
+      </ol-source-vector>
+    </ol-vector-layer>
     <ol-interaction-pointer
       @down="log('⬇️ down', $event)"
     />
@@ -52,11 +72,12 @@ const view = ref<View>();
 const map = ref<Map>();
 const position = ref([]);
 const location = ref(null);
+const savedLocations = ref<Array<{id: number, lat: number, lon: number}>>([]);
 
 const geoLocChange = (event: ObjectEvent) => {
   position.value = event.target.getPosition();
   view.value?.setCenter(event.target?.getPosition());
-  view.value?.setZoom(18);
+  view.value?.setZoom(16);
 };
 
 const clearLocation = () => {
@@ -78,16 +99,27 @@ const getOpenStreetGeocode = async () => {
   }
 };
 
+const getClicksOnMap = async () => {
+  console.log("Fetching all clicks on the map");
+  const response = await fetch(`http://localhost:3000/api/doe`);
+  const data = await response.json();
+  savedLocations.value = data;
+  console.log("Clicks data:", data);
+  // You can add logic here to display the clicks on the map if needed
+};
+
 const log = async (type: string, event: MapBrowserEvent<UIEvent>) =>{
+  savedLocations.value = []; // Clear previous locations
   console.log(type, event);
-  const data = event.coordinate;
+  const [lat, lon]= event.coordinate;
+
   try {
     const response = await fetch(`http://localhost:3000/api/doe`, {
       method: 'POST', // Specify the method
       headers: {
         'Content-Type': 'application/json' // Declare the data type
       },
-      body: JSON.stringify({'lat': data[0], 'lon': data[1]}) // Convert the JavaScript object to a JSON string
+      body: JSON.stringify({'lat': lat, 'lon': lon}) // Convert the JavaScript object to a JSON string
     });
 
     // Check if the request was successful (status in the 2xx range)

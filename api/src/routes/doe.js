@@ -25,10 +25,14 @@ router.post("/", async (ctx, next) => {
 
 // // Get all doe location entries
 router.get("/", async (ctx, next) => {
-  ctx.body = {
-    message: "DOE API is working!",
-    timestamp: new Date().toISOString(),
-  };
+  db.prepare(`select * from location`);
+  const locations = db
+    .prepare(`
+      SELECT id, json_extract(position, '$[1]') AS lat, json_extract(position, '$[0]') AS lon
+      FROM location
+    `)
+    .all();
+  ctx.body = locations;
 });
 
 export default router;
